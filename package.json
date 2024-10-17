@@ -1,0 +1,32 @@
+{  
+  "name": "recipe-sharing-app",  
+  "version": "1.0.0",  
+  "description": "A simple recipe sharing application.",  
+  "main": "index.js",  
+  "scripts": {  
+    "start": "node index.js",  
+    "dev": "nodemon index.js",  
+    "test": "echo \"No tests specified\" && exit 0"
+  },  
+  "repository": {  
+    "type": "git",  
+    "url": "git+https://github.com/yourusername/recipe-sharing-app.git"  
+  },  
+  "keywords": [  
+    "recipes",  
+    "sharing",  
+    "webapp"  
+  ],  
+  "author": "Your Name",  
+  "license": "ISC",  
+  "dependencies": {  
+    "express": "^4.17.1"     
+  },  
+  "devDependencies": {  
+    "nodemon": "^2.0.22"       
+  },  
+  "bugs": {  
+    "url": "https://github.com/yourusername/recipe-sharing-app/issues"  
+  },  
+  "homepage": "https://github.com/yourusername/recipe-sharing-app#readme"  
+}

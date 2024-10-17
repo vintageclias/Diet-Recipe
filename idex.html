@@ -1,0 +1,33 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Recipe Sharing App</title>  
+    <link rel="stylesheet" href="/style.css">  
+</head>  
+<body>  
+    <h1>Recipe Sharing App</h1>  
+    <form id="recipeForm">  
+        <input type="text" id="categoryName" placeholder="Category Name" required>  
+        <input type="text" id="recipeName" placeholder="Recipe Name" required>  
+
+        <input type="text" id="recipePrepTime" placeholder="Prep Time (in minutes)" required>
+     
+        
+        <textarea id="recipeInstructions" placeholder="Instructions" required></textarea>  
+
+        <input type="text" id="recipeIngredients" placeholder="Ingredients (comma separated)" required>  
+        
+        <button type="submit" id="addRecipeBtn">Add Recipe</button>  
+    </form>  
+
+    <h2>Ingredients</h2>  
+    <ul id="ingredientList"></ul>  
+
+    <h2>Recipes</h2>  
+    <div id="recipeContainer"></div>  
+
+    <script src="/app.js"></script>  
+</body>  
+</html>
