@@ -21,3 +21,5 @@ A user:
 - Implement a user authentication system to allow users to sign up and log in.  
 - Add a search feature to filter recipes by ingredients, cooking time, or dietary preferences.  
 - Introduce a rating system for recipes to help users find the best ones.
+## License 
+MIT licensed

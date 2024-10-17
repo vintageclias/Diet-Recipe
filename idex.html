@@ -4,38 +4,32 @@
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <title>Recipe Sharing App</title>  
-    <link rel="stylesheet" href="/style.css">  
+    <link rel="stylesheet" href="/style.css">
+    <style>  
+        body { font-family: Arial, sans-serif; }  
+        .recipe { border: 1px solid #ccc; margin: 10px; padding: 10px; }  
+    </style>  
 </head>  
 <body>  
     <h1>Recipe Sharing App</h1>  
+
     <form id="recipeForm">  
-        <input type="" id="recipeId">
-        
-        <input type="text" id="categoryName" placeholder="Category Name" required>  
-        <input type="text" id="recipeName" placeholder="Recipe Name" required>  
-
-        <input type="text" id="recipePrepTime" placeholder="Prep Time (in minutes)" required>
-     
-        
-        <textarea id="recipeInstructions" placeholder="Instructions" required></textarea>  
-
-        <input type="text" id="recipeIngredients" placeholder="Ingredients (comma separated)" required>  
-        
-        <button type="submit" id="addRecipeBtn">Add Recipe</button>  
+        <input type="hidden" id="recipeId">  
+        <label for="categoryName">Category:</label>  
+        <input type="text" id="categoryName" required>  
+        <label for="recipeName">Recipe Name:</label>  
+        <input type="text" id="recipeName" required>  
+        <label for="recipePrepTime">Prep Time (minutes):</label>  
+        <input type="number" id="recipePrepTime" required>  
+        <label for="recipeInstructions">Instructions:</label>  
+        <textarea id="recipeInstructions" required></textarea>  
+        <label for="recipeIngredients">Ingredients (comma-separated):</label>  
+        <input type="text" id="recipeIngredients" required>  
+        <button type="submit">Add/Update Recipe</button>  
     </form>  
 
-    <h2>Ingredients</h2>  
-    <ul id="ingredientList"></ul>  
-
-    
-    
-
-
-    <h2>Recipes</h2> 
-   
-
+    <h2>All Recipes</h2>  
     <div id="recipeContainer"></div>  
-
 
     <script src="/app.js"></script>  
 </body>  

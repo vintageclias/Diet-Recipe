@@ -1,4 +1,3 @@
-// Wait for the DOM to be ready before executing script  
 document.addEventListener('DOMContentLoaded', () => {  
     // Fetch existing recipes when the page loads  
     fetchRecipes();  
@@ -7,30 +6,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('recipeForm').addEventListener('submit', async (event) => {  
         event.preventDefault();  
 
-        const categoryName = document.getElementById('categoryName').value;  
-        const recipeName = document.getElementById('recipeName').value;  
-        const recipePrepTime = document.getElementById('recipePrepTime').value;  
-        const recipeInstructions = document.getElementById('recipeInstructions').value;  
-        const recipeIngredients = document.getElementById('recipeIngredients').value.split(',');  
-
         const recipe = {  
-            categoryName,  
-            recipeName,  
-            recipePrepTime,  
-            recipeInstructions,  
-            ingredients: recipeIngredients  
+            categoryName: document.getElementById('categoryName').value,  
+            recipeName: document.getElementById('recipeName').value,  
+            recipePrepTime: document.getElementById('recipePrepTime').value,  
+            recipeInstructions: document.getElementById('recipeInstructions').value,  
+            ingredients: document.getElementById('recipeIngredients').value.split(',')  
         };  
 
         // Get the recipe ID from the hidden input  
         const recipeId = document.getElementById('recipeId').value;  
-        
+
         if (recipeId) {  
             // Update existing recipe  
-            updateRecipe(recipeId, recipe);  
+            await updateRecipe(recipeId, recipe);  
         } else {  
             // Create a new recipe  
-            addRecipeToList(recipe);  
-            createRecipe(recipe);  
+            const createdRecipe = await createRecipe(recipe);  
+            addRecipeToList(createdRecipe);  // Add the newly created recipe to the list  
         }  
 
         // Clear the form  
@@ -44,20 +37,17 @@ function addRecipeToList(recipe) {
     const recipeDiv = document.createElement('div');  
     recipeDiv.classList.add('recipe');  
 
-    // Use the ID from the server instead of creating a new one  
-    const recipeId = recipe.id; // Assuming `recipe` has an ID from your server  
-
     recipeDiv.innerHTML = `  
         <h3>${recipe.recipeName}</h3>  
         <p><strong>Category:</strong> ${recipe.categoryName}</p>  
         <p><strong>Prep Time:</strong> ${recipe.recipePrepTime} minutes</p>  
         <p><strong>Instructions:</strong> ${recipe.recipeInstructions}</p>  
         <p><strong>Ingredients:</strong> ${recipe.ingredients.join(', ')}</p>  
-        <button onclick="editRecipe('${recipeId}', '${recipe.recipeName}', '${recipe.categoryName}', '${recipe.recipePrepTime}', '${recipe.recipeInstructions}', '${recipe.ingredients.join(', ')}')">Edit</button>  
-        <button onclick="deleteRecipe('${recipeId}')">Delete</button>  
+        <button onclick="editRecipe('${recipe.id}', '${recipe.recipeName}', '${recipe.categoryName}', '${recipe.recipePrepTime}', '${recipe.recipeInstructions}', '${recipe.ingredients.join(', ')}')">Edit</button>  
+        <button onclick="deleteRecipe('${recipe.id}')">Delete</button>  
     `;  
 
-    recipeDiv.setAttribute('data-id', recipeId);  
+    recipeDiv.setAttribute('data-id', recipe.id);  
     recipeContainer.appendChild(recipeDiv);  
 }  
 
@@ -74,6 +64,7 @@ async function createRecipe(recipe) {
         if (!response.ok) throw new Error('Network response was not ok');  
         const data = await response.json();  
         console.log('Recipe created:', data);  
+        return data; // Return the created recipe  
     } catch (error) {  
         console.error('Error creating recipe:', error);  
     }  
@@ -92,6 +83,18 @@ async function updateRecipe(id, recipe) {
         if (!response.ok) throw new Error('Network response was not ok');  
         const data = await response.json();  
         console.log('Recipe updated:', data);  
+
+        // Update the displayed recipe information in the DOM  
+        const recipeDiv = document.querySelector(`[data-id="${id}"]`);  
+        recipeDiv.innerHTML = `  
+            <h3>${data.recipeName}</h3>  
+            <p><strong>Category:</strong> ${data.categoryName}</p>  
+            <p><strong>Prep Time:</strong> ${data.recipePrepTime} minutes</p>  
+            <p><strong>Instructions:</strong> ${data.recipeInstructions}</p>  
+            <p><strong>Ingredients:</strong> ${data.ingredients.join(', ')}</p>  
+            <button onclick="editRecipe('${data.id}', '${data.recipeName}', '${data.categoryName}', '${data.recipePrepTime}', '${data.recipeInstructions}', '${data.ingredients.join(', ')}')">Edit</button>  
+            <button onclick="deleteRecipe('${data.id}')">Delete</button>  
+        `;  
     } catch (error) {  
         console.error('Error updating recipe:', error);  
     }  
@@ -111,7 +114,7 @@ async function fetchRecipes() {
 
 // Function to edit a recipe  
 function editRecipe(id, name, category, prepTime, instructions, ingredients) {  
-    document.getElementById('recipeId').value = id; // Set the correct recipe ID  
+    document.getElementById('recipeId').value = id;  
     document.getElementById('categoryName').value = category;  
     document.getElementById('recipeName').value = name;  
     document.getElementById('recipePrepTime').value = prepTime;  
