@@ -18,10 +18,10 @@ A user:
 - can view individual recipes and their ratings/comments from other users.  
 
 ## Technologies Used  
-- HTML  
-- CSS  
-- JavaScript  
-- JSON Server  
+- **HTML**: For structuring the webpages 
+- **CSS** : For styling application
+- **JavaScript** : For implimenting ntaractions on then client side
+- **JSON Server** : For simulating a restful api to store and retrieve information
 
 ## Future Plans  
 - Implement a user authentication system to allow users to sign up and log in.  
