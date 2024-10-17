@@ -1,0 +1,3 @@
+[submodule "Diet-Recipe"]
+	path = Diet-Recipe
+	url = git@github.com:vintageclias/Diet-Recipe.git
