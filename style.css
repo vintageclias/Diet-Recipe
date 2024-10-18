@@ -1,87 +1,44 @@
-/* Reset some basic styles */  
-body, h1, h2, h3, p, ul {  
-    margin: 0;  
-    padding: 0;  
-}  
-
-/* Body style */  
 body {  
     font-family: Arial, sans-serif;  
-    background-color: #f9f9f9;  
 }  
 
-/* Main heading style */  
 h1 {  
     text-align: center;  
-    color: #333;  
-    margin: 20px 0;  
 }  
 
-/* Form styling */  
-#recipeForm {  
+section {  
+    margin: 20px;  
+}  
+
+form {  
     display: flex;  
     flex-direction: column;  
-    align-items: center;  
-    margin: 20px auto;  
+}  
+
+label {  
+    margin: 5px 0;  
+}  
+
+input, textarea {  
+    margin: 5px 0 15px;  
+    padding: 8px;  
     width: 300px;  
-    background-color: #fff;  
-    padding: 20px;  
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  
-    border-radius: 5px;  
 }  
 
-/* Input fields styling */  
-input[type="text"], textarea {  
-    width: 100%;  
-    padding: 10px;  
-    margin: 10px 0;  
-    border: 1px solid #ccc;  
-    border-radius: 4px;  
-}  
-
-/* Button styling */  
 button {  
-    padding: 10px 20px;  
-    background-color: #1f74b9;  
-    color: #fff;  
+    padding: 10px;  
+    background-color: #28a745;  
+    color: white;  
     border: none;  
-    border-radius: 4px;  
     cursor: pointer;  
 }  
 
 button:hover {  
-    background-color: #bb1d1d;  
+    background-color: #218838;  
 }  
 
-/* Ingredients section */  
-h2 {  
-    text-align: center;  
-    color: #333;  
-    margin: 20px 0;  
-}  
-
-/* Recipe display container styling */  
-#recipeContainer {  
-    margin: 0 auto;  
-    max-width: 800px;  
-    padding: 10px;  
-}  
-
-/* Individual recipe styling */  
 .recipe {  
-    background-color: #fff;  
+    border: 1px solid #ccc;  
+    padding: 10px;  
     margin: 10px 0;  
-    padding: 15px;  
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);  
-}  
-
-.recipe h3 {  
-    color: #007bff;  
-}  
-
-.recipe p {  
-    margin: 5px 0;  
-    color: #666;
-    font-size: 16px;
-    
 }

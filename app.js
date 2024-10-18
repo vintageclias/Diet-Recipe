@@ -1,141 +1,101 @@
-// Wait for the DOM to be fully loaded  
 document.addEventListener('DOMContentLoaded', () => {  
-    // Fetch existing recipes when the page loads  
-    fetchRecipes();  
+    const recipeForm = document.getElementById('recipeForm');  
+    const recipeContainer = document.getElementById('recipeContainer');  
+    const recipeIdInput = document.getElementById('recipeId');  
+    let recipes = []; // Store recipes in an array.  
 
-    // Handle form submission  
-    document.getElementById('recipeForm').addEventListener('submit', async (event) => {  
-        event.preventDefault();  
+    const displayRecipes = () => {  
+        recipeContainer.innerHTML = ''; // Clear previous recipes  
+        recipes.forEach(recipe => {  
+            const recipeDiv = document.createElement('div');  
+            recipeDiv.classList.add('recipe');  
+            recipeDiv.innerHTML = `  
+                <h3>${recipe.recipeName}</h3>  
+                <p>Category: ${recipe.categoryName}</p>  
+                <p>Preparation Time: ${recipe.recipePrepTime} minutes</p>  
+                <p>Cooking Time: ${recipe.recipeCookTime} minutes</p>  
+                <p>Servings: ${recipe.recipeServings}</p>  
+                <p>Instructions: ${recipe.recipeInstructions}</p>  
+                <p>Ingredients: ${recipe.ingredients.join(', ')}</p>  
+               
+                <button class="editButton" data-id="${recipe.id}">Edit</button>  
+                <button class="deleteButton" data-id="${recipe.id}">Delete</button>  
+            `;  
+            recipeContainer.appendChild(recipeDiv);  
+        });  
 
+        // Add event listeners for edit and delete buttons  
+        document.querySelectorAll('.editButton').forEach(button => {  
+            button.addEventListener('click', editRecipe);  
+        });  
+
+        document.querySelectorAll('.deleteButton').forEach(button => {  
+            button.addEventListener('click', deleteRecipe);  
+        });  
+    };  
+
+    const addOrUpdateRecipe = (recipe) => {  
+        if (recipeIdInput.value) {  
+            // Update existing recipe  
+            const index = recipes.findIndex(r => r.id === parseInt(recipeIdInput.value));  
+            recipes[index] = { ...recipe, id: parseInt(recipeIdInput.value) };  
+            recipeIdInput.value = ''; // Clear the ID after use  
+        } else {  
+            // Add new recipe  
+            recipe.id = recipes.length ? Math.max(recipes.map(r => r.id)) + 1 : 1; // Generate new ID  
+            recipes.push(recipe);  
+        }  
+        displayRecipes();  
+        showSuccessMessage('Recipe saved successfully!');  
+        recipeForm.reset(); // Reset form  
+    };  
+
+    const deleteRecipe = (event) => {  
+        const id = parseInt(event.target.dataset.id);  
+        recipes = recipes.filter(recipe => recipe.id !== id);  
+        displayRecipes();  
+        showSuccessMessage('Recipe deleted successfully!');  
+    };  
+
+    const editRecipe = (event) => {  
+        const id = parseInt(event.target.dataset.id);  
+        const recipe = recipes.find(r => r.id === id);  
+        if (recipe) {  
+            categoryName.value = recipe.categoryName;  
+            recipeName.value = recipe.recipeName;  
+            recipePrepTime.value = recipe.recipePrepTime;  
+            recipeCookTime.value = recipe.recipeCookTime;  
+            recipeServings.value = recipe.recipeServings;  
+            recipeInstructions.value = recipe.recipeInstructions;  
+            recipeIngredients.value = recipe.ingredients.join(', ');  
+            recipeImage.value = recipe.recipeImage;  
+            recipeIdInput.value = recipe.id; // Set ID for editing  
+        }  
+    };  
+
+    const showSuccessMessage = (message) => {  
+        const successContainer = document.getElementById('successContainer');  
+        successContainer.textContent = message;  
+        setTimeout(() => {  
+            successContainer.textContent = ''; // Clear message after a few seconds  
+        }, 3000);  
+    };  
+
+    recipeForm.addEventListener('submit', (event) => {  
+        event.preventDefault(); // Prevent form submission  
         const recipe = {  
-            categoryName: document.getElementById('categoryName').value,  
-            recipeName: document.getElementById('recipeName').value,  
+            categoryName: document.getElementById('categoryName').value.trim(),  
+            recipeName: document.getElementById('recipeName').value.trim(),  
             recipePrepTime: document.getElementById('recipePrepTime').value,  
-            recipeInstructions: document.getElementById('recipeInstructions').value,  
-            ingredients: document.getElementById('recipeIngredients').value.split(',')  
+            recipeCookTime: document.getElementById('recipeCookTime').value,  
+            recipeServings: document.getElementById('recipeServings').value,  
+            recipeInstructions: document.getElementById('recipeInstructions').value.trim(),  
+            ingredients: document.getElementById('recipeIngredients').value.split(',').map(item => item.trim()).filter(item => item !== ''),  
+         
         };  
 
-        // Get the recipe ID from the hidden input  
-        const recipeId = document.getElementById('recipeId').value;  
-
-        if (recipeId) {  
-            // Update existing recipe  
-            await updateRecipe(recipeId, recipe);  
-        } else {  
-            // Create a new recipe  
-            const createdRecipe = await createRecipe(recipe);  
-            addRecipeToList(createdRecipe);  // Add the newly created recipe to the list  
-        }  
-
-        // Clear the form  
-        document.getElementById('recipeForm').reset();  
+        addOrUpdateRecipe(recipe);  
     });  
-});  
 
-// Function to add recipe to the displayed list  
-function addRecipeToList(recipe) {  
-    const recipeContainer = document.getElementById('recipeContainer');  
-    const recipeDiv = document.createElement('div');  
-    recipeDiv.classList.add('recipe');  
-
-    recipeDiv.innerHTML = `  
-        <h3>${recipe.recipeName}</h3>  
-        <p><strong>Category:</strong> ${recipe.categoryName}</p>  
-        <p><strong>Prep Time:</strong> ${recipe.recipePrepTime} minutes</p>  
-        <p><strong>Instructions:</strong> ${recipe.recipeInstructions}</p>  
-        <p><strong>Ingredients:</strong> ${recipe.ingredients.join(', ')}</p>  
-        <button onclick="editRecipe('${recipe.id}', '${recipe.recipeName}', '${recipe.categoryName}', '${recipe.recipePrepTime}', '${recipe.recipeInstructions}', '${recipe.ingredients.join(', ')}')">Edit</button>  
-        <button onclick="deleteRecipe('${recipe.id}')">Delete</button>  
-    `;  
-
-    recipeDiv.setAttribute('data-id', recipe.id);  
-    recipeContainer.appendChild(recipeDiv);  
-}  
-
-// Function to create a new recipe  
-async function createRecipe(recipe) {  
-    try {  
-        const response = await fetch('http://localhost:3000/recipes', {  
-            method: 'POST',  
-            headers: {  
-                'Content-Type': 'application/json'  
-            },  
-            body: JSON.stringify(recipe)  
-        });  
-        if (!response.ok) throw new Error('Network response was not ok');  
-        const data = await response.json();  
-        console.log('Recipe created:', data);  
-        return data; // Return the created recipe  
-    } catch (error) {  
-        console.error('Error creating recipe:', error);  
-    }  
-}  
-
-// Function to update an existing recipe using PUT  
-async function updateRecipe(id, recipe) {  
-    try {  
-        const response = await fetch(`http://localhost:3000/recipes/${id}`, {  
-            method: 'PUT',  
-            headers: {  
-                'Content-Type': 'application/json'  
-            },  
-            body: JSON.stringify(recipe)  
-        });  
-        if (!response.ok) throw new Error('Network response was not ok');  
-        const data = await response.json();  
-        console.log('Recipe updated:', data);  
-
-        // Update the displayed recipe information in the DOM  
-        const recipeDiv = document.querySelector(`[data-id="${id}"]`);  
-        recipeDiv.innerHTML = `  
-            <h3>${data.recipeName}</h3>  
-            <p><strong>Category:</strong> ${data.categoryName}</p>  
-            <p><strong>Prep Time:</strong> ${data.recipePrepTime} minutes</p>  
-            <p><strong>Instructions:</strong> ${data.recipeInstructions}</p>  
-            <p><strong>Ingredients:</strong> ${data.ingredients.join(', ')}</p>  
-            <button onclick="editRecipe('${data.id}', '${data.recipeName}', '${data.categoryName}', '${data.recipePrepTime}', '${data.recipeInstructions}', '${data.ingredients.join(', ')}')">Edit</button>  
-            <button onclick="deleteRecipe('${data.id}')">Delete</button>  
-        `;  
-    } catch (error) {  
-        console.error('Error updating recipe:', error);  
-    }  
-}  
-
-// Function to fetch existing recipes (GET)  
-async function fetchRecipes() {  
-    try {  
-        const response = await fetch('http://localhost:3000/recipes');  
-        if (!response.ok) throw new Error('Network response was not ok');  
-        const recipes = await response.json();  
-        recipes.forEach(addRecipeToList);  
-    } catch (error) {  
-        console.error('Error fetching recipes:', error);  
-    }  
-}  
-
-// Function to edit a recipe  
-function editRecipe(id, name, category, prepTime, instructions, ingredients) {  
-    document.getElementById('recipeId').value = id;  
-    document.getElementById('categoryName').value = category;  
-    document.getElementById('recipeName').value = name;  
-    document.getElementById('recipePrepTime').value = prepTime;  
-    document.getElementById('recipeInstructions').value = instructions;  
-    document.getElementById('recipeIngredients').value = ingredients;  
-
-    // Optionally, show a message or highlight the form  
-    alert(`Editing recipe: ${name}`);  
-}  
-
-// Function to delete a recipe  
-async function deleteRecipe(id) {  
-    try {  
-        const response = await fetch(`http://localhost:3000/recipes/${id}`, {  
-            method: 'DELETE'  
-        });  
-        if (!response.ok) throw new Error('Network response was not ok');  
-        console.log('Recipe deleted:', id);  
-        document.querySelector(`[data-id="${id}"]`).remove(); // Remove the recipe from the DOM  
-    } catch (error) {  
-        console.error('Error deleting recipe:', error);  
-    }  
-}
+    document.getElementById('refreshButton').addEventListener('click', displayRecipes);  
+});
