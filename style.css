@@ -27,14 +27,14 @@ input, textarea {
 
 button {  
     padding: 10px;  
-    background-color: #28a745;  
+    background-color: #0e55b3;  
     color: white;  
     border: none;  
     cursor: pointer;  
 }  
 
 button:hover {  
-    background-color: #218838;  
+    background-color: #ac7784;  
 }  
 
 .recipe {  
