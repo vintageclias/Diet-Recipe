@@ -15,10 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Preparation Time: ${recipe.recipePrepTime} minutes</p>  
                 <p>Cooking Time: ${recipe.recipeCookTime} minutes</p>  
                 <p>Servings: ${recipe.recipeServings}</p>  
-                <p>Instructions: ${recipe.recipeInstructions}</p>  
-                <p>Ingredients: ${recipe.ingredients.join(', ')}</p>  
-               
-                <button class="editButton" data-id="${recipe.id}">Edit</button>  
+                <p>Instructions: ${recipe.recipeInstructions}</p>                 
+                 <p>Ingredients: ${recipe.ingredients.join(', ')}</p>  
+                  ${recipe.recipeImage ? `<img src="${recipe.recipeImage}" alt="${recipe.recipeName}" style="max-width: 100%; height: auto;" />` : ''}
+
+
+
+                
+                                <button class="editButton" data-id="${recipe.id}">Edit</button>  
                 <button class="deleteButton" data-id="${recipe.id}">Delete</button>  
             `;  
             recipeContainer.appendChild(recipeDiv);  
